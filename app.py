@@ -1,6 +1,10 @@
 import streamlit as st
 import pandas as pd
 
+# Initialize theme in session state
+if "theme" not in st.session_state:
+    st.session_state.theme = "light"
+
 st.set_page_config(page_title="Risk and Evaluation Framework Survey", layout="wide")
 
 SCORE_CHOICES = [
@@ -186,6 +190,84 @@ def score_framework(framework_name: str, data: dict, responses: dict) -> dict:
 
 st.title("Risk and Evaluation Framework Survey")
 st.caption("Assess NIST AI RMF, COSO ERM, and GRC practices with a structured questionnaire.")
+
+st.sidebar.header("Theme")
+
+
+def toggle_theme():
+    st.session_state.theme = "dark" if st.session_state.theme == "light" else "light"
+
+
+theme_label = "🌙 Dark Mode" if st.session_state.theme == "light" else "☀️ Light Mode"
+st.sidebar.button(theme_label, on_click=toggle_theme, use_container_width=True)
+
+# Apply custom CSS based on theme
+if st.session_state.theme == "dark":
+    st.markdown(
+        """
+        <style>
+        .stApp {
+            background-color: #1E1E1E;
+            color: #FFFFFF;
+        }
+        .stSidebar, [data-testid="stSidebar"] {
+            background-color: #262626;
+        }
+        .stMarkdown, .stText, p, span, label, h1, h2, h3, h4, h5, h6 {
+            color: #FFFFFF !important;
+        }
+        [data-testid="stMetricValue"], [data-testid="stMetricLabel"], [data-testid="stMetricDelta"] {
+            color: #FFFFFF !important;
+        }
+        .stDataFrame {
+            background-color: #2D2D2D;
+        }
+        .stTabs [data-baseweb="tab-list"] {
+            background-color: #262626;
+        }
+        .stTabs [data-baseweb="tab"] {
+            color: #FFFFFF;
+        }
+        div[data-testid="stHorizontalBlock"] label {
+            color: #FFFFFF !important;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+else:
+    st.markdown(
+        """
+        <style>
+        .stApp {
+            background-color: #FFFFFF;
+            color: #262730;
+        }
+        .stSidebar, [data-testid="stSidebar"] {
+            background-color: #F0F2F6;
+        }
+        .stMarkdown, .stText, p, span, label, h1, h2, h3, h4, h5, h6 {
+            color: #262730 !important;
+        }
+        [data-testid="stMetricValue"], [data-testid="stMetricLabel"], [data-testid="stMetricDelta"] {
+            color: #262730 !important;
+        }
+        .stDataFrame {
+            background-color: #FFFFFF;
+        }
+        .stTabs [data-baseweb="tab-list"] {
+            background-color: #F0F2F6;
+        }
+        .stTabs [data-baseweb="tab"] {
+            color: #262730;
+        }
+        div[data-testid="stHorizontalBlock"] label {
+            color: #262730 !important;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
 
 st.sidebar.header("Survey Controls")
 show_details = st.sidebar.checkbox("Show detailed scoring tables", value=True)
